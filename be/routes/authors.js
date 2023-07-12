@@ -1,17 +1,17 @@
 const express = require('express')
 const mongoose = require('mongoose')
-const UserModel = require('../models/userModel')
+const AuthorModel = require('../models/authorModel')
 
-const user = express.Router();
+const router = express.Router();
 
 //! CREA FUNZIONE GET
-user.get('/users', async(req, res) => {
+router.get('/authors', async(req, res) => {
     try {
-        const users = await UserModel.find()
+        const authors = await AuthorModel.find()
 
         res.status(200).send({
             statusCode: 200,
-            users: users
+            authors: authors
         })
     } catch (error) {
         res.status(500).send({
@@ -24,9 +24,9 @@ user.get('/users', async(req, res) => {
 
 //! CREA FUNZIONE POST
 
-user.post('/users', async(req, res) => {
+router.post('/authors', async(req, res) => {
 
-    const newUser = new UserModel({
+    const newAuthor = new AuthorModel({
         name: req.body.name,
         surname: req.body.surname,
         email: req.body.email,
@@ -35,11 +35,11 @@ user.post('/users', async(req, res) => {
     })
 
     try {
-        const user = await newUser.save();
+        const author = await newAuthor.save();
         res.status(201).send({
             statusCode: 201,
-            message: 'User saved successfully',
-            payload: user
+            message: 'Authors saved successfully',
+            payload: author
         })
     } catch (error) {
         res.status(500).send({
@@ -52,15 +52,15 @@ user.post('/users', async(req, res) => {
 })
 
 //! GET By ID
-user.get('/users/:id' , async (req, res) => {
+router.get('/authors/:id' , async (req, res) => {
     const {id} = req.params;
 
     try {
-        const userById = await UserModel.findById(id)
+        const authorById = await AuthorModel.findById(id)
 
         res.status(200).send({
             statusCode: 200,
-            userById
+            authorById
         })
     } catch (error) {
         res.status(500).send({
@@ -74,28 +74,28 @@ user.get('/users/:id' , async (req, res) => {
 
 //! CREA FUNZIONE PATCH
 
-user.patch('/users/:id', async(req, res) => {
+router.patch('/authors/:id', async(req, res) => {
     const {id} = req.params;
 
-    const userExists = await UserModel.findById(id)
+    const authorExists = await AuthorModel.findById(id)
 
-    if(!userExists) {
+    if(!authorExists) {
         return res.status(404).send({
             statusCode: 404,
-            message: `User with id ${id} doesen't exist`
+            message: `Author with id ${id} doesen't exist`
         })
     }
 
     try {
-        const userId = id;
+        const authorId = id;
         const dataToUpdate = req.body;
         const options = {new: true};
 
-        const result = await UserModel.findByIdAndUpdate(userId, dataToUpdate, options);
+        const result = await AuthorModel.findByIdAndUpdate(authorId, dataToUpdate, options);
 
         res.status(200).send({
             statusCode: 200,
-            message: `User with id ${userId} modified successfully`,
+            message: `Author with id ${authorId} modified successfully`,
             result
         })
     } catch (error) {
@@ -109,24 +109,24 @@ user.patch('/users/:id', async(req, res) => {
 
 //! DELETE
 
-user.delete('/users/:id', async(req, res) => {
+router.delete('/authors/:id', async(req, res) => {
     const {id} = req.params;
-    const userExists = await UserModel.findById(id)
+    const authorExists = await AuthorModel.findById(id)
 
-    if (!userExists) {
+    if (!authorExists) {
         return res.status(404).send({
             statusCode: 404,
-            message: 'User not Found'
+            message: 'Author not Found'
         })
     }
 
     try {
-        const userToDelete = await UserModel.findByIdAndDelete(id)
+        const authorToDelete = await AuthorModel.findByIdAndDelete(id)
 
         res.status(200).send({
             statusCode: 200,
-            message: 'User deleted successuffly',
-            userToDelete
+            message: 'Author deleted successuffly',
+            authorToDelete
         })
     } catch (error) {
         res.status(500).send({
@@ -137,4 +137,4 @@ user.delete('/users/:id', async(req, res) => {
     }
 })
 
-module.exports = user;
+module.exports = router;

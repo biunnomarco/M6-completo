@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { getUsers, postUser } from '../../Store/userSlice';
+import { getAuthors, postAuthors } from '../../Store/authorSlice';
 import { UseSelector } from 'react-redux/es/hooks/useSelector';
-import SingleUser from '../SingleUser/SingleUser';
+import SingleAuthor from '../SingleAuthor/SingleAuthor';
+
 
 
 const Prova = () => {
@@ -22,28 +23,28 @@ const Prova = () => {
             "birthdate": birthdate,
             "avatar": avatar
         }
-        dispatch(postUser(postPayload)).then(() => dispatch(getUsers()))
+        dispatch(postAuthors(postPayload)).then(() => dispatch(getAuthors()))
     }
 
     const dispatch = useDispatch()
-    const allUsers = useSelector(state => state.users)
-    console.log(allUsers)
+    const allAuthors = useSelector(state => state.authors)
+    console.log(allAuthors)
 
     useEffect(() => {
-        dispatch(getUsers())
+        dispatch(getAuthors())
         
     }, [])
 
     return (
         <>
             <div className='d-flex flex-wrap gap-3'>
-                {allUsers.users.users.map((user) => {
+                {allAuthors.authors && allAuthors.authors.map((author) => {
                     return (
-                        <SingleUser user={user} />
+                        <SingleAuthor author={author}/>
                     )
                 })}
             </div>
-
+            {/* {JSON.stringify(allUsers)} */}
             <div>NEW POST</div>
             <input type="text" placeholder='name' onChange={(e) => setName(e.target.value)} />
             <input type="text" placeholder='surname' onChange={(e) => setSurname(e.target.value)} />

@@ -6,7 +6,7 @@ const PORT = 6060
 require('dotenv').config();
 
 //require routes
-const userRoutes = require('./routes/users')
+const authorRoutes = require('./routes/authors')
 
 const app = express();
 
@@ -14,7 +14,7 @@ const app = express();
 app.use(express.json())
 app.use(cors())
 //use routes
-app.use('/', userRoutes)
+app.use('/', authorRoutes)
 
 
 mongoose.connect(process.env.MONGO_DB_URL)

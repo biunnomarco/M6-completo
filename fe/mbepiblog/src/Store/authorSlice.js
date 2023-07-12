@@ -1,36 +1,36 @@
 import { createSlice, createAsyncThunk} from "@reduxjs/toolkit";
 
-const endpoint = 'http://localhost:6060/users'
+const endpoint = 'http://localhost:6060/authors'
 
 const initialState = {
-    users: [],
+    authors: [],
     status: 'idle'
 }
 
-const userSlice = createSlice({
-    name: 'users',
+const authorSlice = createSlice({
+    name: 'authors',
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
-        .addCase(getUsers.fulfilled, (state, action) =>{
-            state.users = action.payload;
+        .addCase(getAuthors.fulfilled, (state, action) =>{
+            state.authors = action.payload.authors;
             state.status = 'idle'
         })
-        .addCase(getUsers.pending, (state, action) =>{
+        .addCase(getAuthors.pending, (state, action) =>{
             state.status = 'pending'
             console.log(action)
         })
-        .addCase(getUsers.rejected, (state, action) =>{
+        .addCase(getAuthors.rejected, (state, action) =>{
             state.status = 'error'
         })
     }
 })
 
-export default userSlice.reducer;
+export default authorSlice.reducer;
 
 
-export const getUsers = createAsyncThunk('users/get', async() => {
+export const getAuthors = createAsyncThunk('authors/get', async() => {
     const data = await fetch(endpoint, {
         
     });
@@ -40,7 +40,7 @@ export const getUsers = createAsyncThunk('users/get', async() => {
 
 
 
-export const postUser = createAsyncThunk('users/post', async(postPayload) => {
+export const postAuthors = createAsyncThunk('authors/post', async(postPayload) => {
     const postRes = await fetch(endpoint, {
         method: "POST",
         body: JSON.stringify(postPayload),
