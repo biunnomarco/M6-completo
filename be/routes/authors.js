@@ -1,13 +1,20 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const AuthorModel = require('../models/authorModel')
+const blogPostModel = require('../models/blogPostModel');
+const { validateAuthorBody, authorBodyParams } = require('../Validators/authorValidator');
+const bcrypt = require('bcrypt')
+const verifyToken = require('../middleware/verifyToken')
 
 const router = express.Router();
 
+
+
 //! CREA FUNZIONE GET
-router.get('/authors', async(req, res) => {
+router.get('/authors', verifyToken ,async(req, res) => {
     try {
         const authors = await AuthorModel.find()
+        .populate('posts')
 
         res.status(200).send({
             statusCode: 200,
@@ -24,14 +31,27 @@ router.get('/authors', async(req, res) => {
 
 //! CREA FUNZIONE POST
 
-router.post('/authors', async(req, res) => {
+router.post('/authors', [authorBodyParams, validateAuthorBody], async(req, res) => {
+
+   /*  const authorExists = AuthorModel.find({email: req.body.email})
+    if (authorExists) {
+        return res.status(400).send({
+            statusCode: 400,
+            message: "user already registered"
+        })
+    } */
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt)
 
     const newAuthor = new AuthorModel({
         name: req.body.name,
         surname: req.body.surname,
         email: req.body.email,
+        password: hashedPassword,
         birthdate: req.body.birthdate,
         avatar: req.body.avatar,
+        role: req.body.role,
     })
 
     try {
@@ -52,11 +72,24 @@ router.post('/authors', async(req, res) => {
 })
 
 //! GET By ID
-router.get('/authors/:id' , async (req, res) => {
+router.get('/authors/:id' ,verifyToken , async (req, res) => {
     const {id} = req.params;
 
     try {
         const authorById = await AuthorModel.findById(id)
+        .populate({
+            path: 'posts',
+            populate: {
+                path: 'author'
+            }
+        })
+
+        if (!authorById) {
+            return res.status(404).send({
+                statusCode: 404,
+                message: `Author with id ${id} doesn't exist`
+            })
+        }
 
         res.status(200).send({
             statusCode: 200,
@@ -109,7 +142,7 @@ router.patch('/authors/:id', async(req, res) => {
 
 //! DELETE
 
-router.delete('/authors/:id', async(req, res) => {
+router.delete('/authors/:id', verifyToken, async(req, res) => {
     const {id} = req.params;
     const authorExists = await AuthorModel.findById(id)
 
@@ -136,5 +169,35 @@ router.delete('/authors/:id', async(req, res) => {
         })
     }
 })
+
+
+//!CERCA BLOG POSTS DEL SINGOLO AUTORE
+
+router.get('/authors/:id/blogPosts', async(req, res) => {
+    const {id} = req.params;
+    const findAuthor = await AuthorModel.findById(id);
+    if (!findAuthor) {
+        return res.status(404).send({
+            statusCode: 404,
+            message: 'Author not Found'
+        })
+    }
+
+    try {
+         const authorsPosts = await blogPostModel.find({ "author.name": findAuthor.name})
+
+        res.status(200).send({
+            statusCode: 200,
+            authorsPosts
+        })
+    } catch (error) {
+       res.status(500).send({
+        statusCode:500,
+        message: "Internal server error",
+        error
+       })
+    }
+})
+
 
 module.exports = router;

@@ -2,19 +2,28 @@ const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
 const PORT = 6060
+const path = require("path")
 
 require('dotenv').config();
 
 //require routes
-const authorRoutes = require('./routes/authors')
+const authorRoutes = require('./routes/authors');
+const blogPostsRoutes = require('./routes/blogPosts');
+const resourcesRoutes = require('./routes/resources');
+const loginRoutes = require('./routes/login')
 
 const app = express();
 
 //middlewere
 app.use(express.json())
 app.use(cors())
+app.use('/uploads', express.static('uploads'))
 //use routes
 app.use('/', authorRoutes)
+app.use('/', blogPostsRoutes)
+app.use('/', resourcesRoutes)
+app.use('/', loginRoutes)
+
 
 
 mongoose.connect(process.env.MONGO_DB_URL)

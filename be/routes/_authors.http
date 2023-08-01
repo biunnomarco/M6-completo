@@ -2,7 +2,7 @@ GET http://localhost:6060/authors
 
 #####
 
-GET http://localhost:6060/authors/64aebd872fa8b79a27f23ab3
+GET http://localhost:6060/authors/64b97e30a8221196137955df
 
 #####
 
@@ -10,11 +10,13 @@ POST http://localhost:6060/authors HTTP/1.1
 Content-Type: application/json
 
 {
-"name": "Matteo",
-"surname": "Di Gennaro",
-"email": "mtg@gmail.com",
-"birthdate": "11/09/1995",
-"avatar": "avatar3.jpg"
+"name": "Prova",
+"surname": "Prova",
+"email": "prova@gmail.com",
+"password": "prova",
+"birthdate": "06/06/1900",
+"avatar": "a.jpg",
+"role": "member"
 }
 
 #####
@@ -28,4 +30,8 @@ Content-Type: application/json
 
 #####
 
-DELETE http://localhost:6060/authors/64aebd872fa8b79a27f23ab3
+DELETE http://localhost:6060/authors/64c3961587bf520cf66b4d77
+
+
+#####
+GET http://localhost:6060/authors/64b2e1a1b1b1c7ddda6256ac/blogPosts

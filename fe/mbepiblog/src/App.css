@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Rowdies:wght@300&family=Shadows+Into+Light&display=swap');
+
+
 .App {
   text-align: center;
 }
@@ -35,4 +38,16 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+
+
+/* Colori cambio tema */
+
+.dark-secondary {
+  background-color: #4F4557 !important;
+}
+
+.Rowdies {
+  font-family: Rowdies;
 }

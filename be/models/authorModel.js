@@ -12,6 +12,11 @@ const AuthorModelSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
+        unique: true,
+    },
+    password: {
+        type: String,
+        required: true,
     },
     birthdate: {
         type: String,
@@ -20,8 +25,20 @@ const AuthorModelSchema = new mongoose.Schema({
     avatar: {
         type: String,
         required: true,
-    }
-}, {timestamps: true, strict: true})
+    },
+    role: {
+        type: String,
+        enum: ["guest", "member", "admin", "moderator"],
+        default: "member",
+    },
+    posts: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'BlogPost',
+            default: [],
+        }
+    ]
+}, { timestamps: true, strict: true })
 
 
 module.exports = mongoose.model('Author', AuthorModelSchema, 'authors')
